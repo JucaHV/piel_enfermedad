@@ -1,0 +1,157 @@
+body {
+    font-family: 'Arial', sans-serif;
+    color: #5d4037; /* Color marrón oscuro para el texto */
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(-45deg, #ffccbc, #ffab91, #ff8a65, #ff7043);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+    backdrop-filter: blur(10px);
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: #5d4037; /* Color marrón oscuro para el título */
+    font-size: 2.5rem;
+}
+
+.upload-section {
+    margin-bottom: 20px;
+}
+
+.upload-btn {
+    background-color: #ff7043; /* Color naranja suave */
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-block;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+    font-size: 1rem;
+}
+
+.upload-btn:hover {
+    background-color: #ff5722; /* Color naranja más oscuro al pasar el mouse */
+}
+
+#image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#uploadedImage {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+#uploadedImage:hover {
+    transform: scale(1.05);
+}
+
+#webcam-container {
+    margin-top: 20px;
+}
+
+.camera-controls {
+    margin-top: 20px;
+}
+
+button {
+    background-color: #ff7043; /* Color naranja suave */
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+    font-size: 1rem;
+}
+
+button:hover {
+    background-color: #ff5722; /* Color naranja más oscuro al pasar el mouse */
+}
+
+#results {
+    margin-top: 30px;
+    text-align: left;
+}
+
+#confidence-bar {
+    width: 100%;
+    height: 20px;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+#confidence-fill {
+    height: 100%;
+    width: 0%;
+    background-color: #ff7043; /* Color naranja suave */
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+#confidence-text {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #5d4037; /* Color marrón oscuro para el texto */
+}
+
+#label-container {
+    margin-top: 20px;
+}
+
+.label-card {
+    background-color: #fbe9e7; /* Color rosado suave */
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.label-card.highest {
+    border: 2px solid #ff7043; /* Color naranja suave */
+    background-color: #ffccbc; /* Color naranja claro */
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.label-card.highest strong {
+    color: #5d4037; /* Color marrón oscuro para el texto */
+}

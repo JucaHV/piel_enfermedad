@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultorio Dermatológico</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Diagnóstico de Enfermedades de la Piel</h1>
+        <p>Sube una foto de tu condición en la piel o usa la cámara para obtener un diagnóstico preciso.</p>
+        
+        <div class="upload-section">
+            <input type="file" id="imageUpload" accept="image/*" style="display:none;">
+            <label for="imageUpload" class="upload-btn">
+                <i class="fas fa-upload"></i> Subir Imagen
+            </label>
+        </div>
+
+        <div id="image-container">
+            <img id="uploadedImage" src="#" alt="Imagen subida por el usuario" style="display:none;">
+        </div>
+
+        <div id="webcam-container"></div>
+        <div class="camera-controls">
+            <button type="button" id="webcam-btn" onclick="initWebcam()">
+                <i class="fas fa-camera"></i> Usar Cámara
+            </button>
+            <button type="button" id="stop-webcam-btn" onclick="stopWebcam()" style="display:none;">
+                <i class="fas fa-stop"></i> Detener Cámara
+            </button>
+        </div>
+
+        <div id="results">
+            <h2>Resultados del Diagnóstico</h2>
+            <div id="confidence-bar">
+                <div id="confidence-fill"></div>
+            </div>
+            <p id="confidence-text">Confianza del modelo: <span id="confidence-value">0%</span></p>
+            <div id="label-container"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
