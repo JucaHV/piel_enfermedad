@@ -1,7 +1,6 @@
 const URL = "https://teachablemachine.withgoogle.com/models/GT1Uu0K4D/";
 let model, webcam, labelContainer, maxPredictions;
 let isWebcamActive = false; // Variable para rastrear si la cámara está activa
-let lastImagePrediction = null; // Almacenar los resultados de la última imagen subida
 
 // Inicializar el modelo
 async function loadModel() {
@@ -33,7 +32,7 @@ async function initWebcam() {
         uploadedImage.style.display = 'none';
     }
 
-    // Limpiar resultados previos
+    // Limpiar completamente los resultados previos
     resetResults();
 
     // Mostrar el botón para detener la cámara
@@ -55,18 +54,10 @@ function stopWebcam() {
         document.getElementById("stop-webcam-btn").style.display = "none";
         document.getElementById("webcam-btn").style.display = "inline-block";
 
-        // Restablecer la visibilidad de la imagen subida si existe
-        const uploadedImage = document.getElementById('uploadedImage');
-        if (uploadedImage) {
-            uploadedImage.style.display = 'block';
-        }
-
-        // Restaurar los resultados de la última imagen subida
-        if (lastImagePrediction) {
-            updateResults(lastImagePrediction);
-        } else {
-            resetResults(); // Si no hay imagen previa, limpiar los resultados
-        }
+        // Limpiar completamente los resultados previos con un pequeño retraso
+        setTimeout(() => {
+            resetResults();
+        }, 100); // Pequeño retraso para asegurar que la limpieza ocurra después de detener la cámara
 
         isWebcamActive = false; // Marcar la cámara como inactiva
     }
@@ -74,26 +65,66 @@ function stopWebcam() {
 
 // Reiniciar resultados
 function resetResults() {
+    // Limpiar la barra de confianza
     document.getElementById("confidence-value").textContent = "0%";
     document.getElementById("confidence-fill").style.width = "0%";
-    document.getElementById("label-container").innerHTML = '';
+
+    // Limpiar el contenedor de etiquetas
+    const labelContainer = document.getElementById("label-container");
+    labelContainer.innerHTML = '';
 }
 
 // Bucle para actualizar la cámara y realizar predicciones
 async function loop() {
     if (isWebcamActive) { // Solo actualizar si la cámara está activa
         webcam.update();
-        await predict();
+        await predictFromWebcam(); // Usar una función específica para la cámara
         window.requestAnimationFrame(loop);
     }
 }
 
 // Realizar predicciones sobre la imagen de la cámara
-async function predict() {
+async function predictFromWebcam() {
     if (!model) return; // Asegurarse de que el modelo esté cargado
 
     const prediction = await model.predict(webcam.canvas);
-    updateResults(prediction);
+    updateCameraResults(prediction); // Usar una función específica para actualizar los resultados de la cámara
+}
+
+// Actualizar los resultados de la cámara
+function updateCameraResults(predictions) {
+    // Asegurarse de que el contenedor de etiquetas esté inicializado
+    labelContainer = document.getElementById("label-container");
+    if (!labelContainer) {
+        console.error("El contenedor de etiquetas no está disponible.");
+        return;
+    }
+
+    // Ordenar las predicciones de mayor a menor probabilidad
+    predictions.sort((a, b) => b.probability - a.probability);
+
+    // Calcular la confianza del modelo
+    let confidence = 0;
+    if (predictions.length > 1) {
+        confidence = (predictions[0].probability - predictions[1].probability) * 100;
+    } else {
+        confidence = 100; // Si solo hay una predicción, la confianza es del 100%
+    }
+
+    document.getElementById("confidence-value").textContent = confidence.toFixed(2) + "%";
+    document.getElementById("confidence-fill").style.width = confidence + "%";
+
+    // Mostrar las predicciones
+    labelContainer.innerHTML = '';
+    predictions.forEach((pred, index) => {
+        const card = document.createElement("div");
+        card.className = "label-card";
+        if (index === 0) {
+            card.classList.add("highest"); // Resaltar la predicción con el mayor porcentaje
+        }
+        card.innerHTML = `<strong>${pred.className}:</strong> ${(pred.probability * 100).toFixed(2)}%`;
+        labelContainer.appendChild(card);
+    });
 }
 
 // Manejar la subida de imágenes
@@ -113,7 +144,7 @@ document.getElementById('imageUpload').addEventListener('change', async function
         reader.onload = async function(e) {
             const img = document.getElementById('uploadedImage');
             img.src = e.target.result;
-            img.style.display = 'block';
+            img.style.display = 'block'; // Asegurarse de que la imagen sea visible
 
             // Redimensionar la imagen para que coincida con el tamaño del modelo
             const resizedCanvas = document.createElement('canvas');
@@ -130,14 +161,13 @@ document.getElementById('imageUpload').addEventListener('change', async function
 
             // Realizar la predicción
             const prediction = await model.predict(resizedCanvas);
-            lastImagePrediction = prediction; // Guardar los resultados de esta imagen
             updateResults(prediction);
         };
         reader.readAsDataURL(file);
     }
 });
 
-// Actualizar los resultados y la confianza del modelo
+// Actualizar los resultados generales
 function updateResults(predictions) {
     // Asegurarse de que el contenedor de etiquetas esté inicializado
     labelContainer = document.getElementById("label-container");
